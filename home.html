@@ -1,0 +1,443 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Instagram Clone - Web Layout</title>
+    <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@400;500;700&display=swap" rel="stylesheet">
+    <style>
+        /* CSS được cập nhật sẽ nằm ở đây */
+        /* --- BẮT ĐẦU CSS --- */
+        * { box-sizing: border-box; margin: 0; padding: 0; }
+        body {
+            font-family: 'Roboto', sans-serif;
+            background-color: #fafafa;
+            color: #262626;
+            overflow-y: hidden; /* Ngăn cuộn body, chỉ cho phép khu vực feed cuộn */
+        }
+        
+        /* Ẩn các thành phần mobile không cần thiết */
+        .header, .footer-nav {
+            display: none; 
+        }
+
+        /* === BỐ CỤC CHÍNH (GRID) === */
+        .main-container {
+            display: grid;
+            /* 1. Sidebar Trái: Cố định 244px */
+            /* 2. Content Area (Feed + Suggestions): chiếm không gian còn lại */
+            grid-template-columns: 244px 1fr; 
+            height: 100vh;
+        }
+
+        /* 1. SIDEBAR TRÁI (LEFT NAVIGATION) */
+        .left-sidebar {
+            border-right: 1px solid #dbdbdb;
+            padding: 20px 12px 20px 12px;
+            position: sticky; 
+            top: 0;
+            height: 100vh;
+            background-color: #fff;
+            z-index: 10;
+        }
+        .left-sidebar .logo {
+            font-family: 'Roboto', sans-serif;
+            font-size: 24px;
+            font-weight: 700;
+            margin-bottom: 25px;
+            padding: 0 12px;
+        }
+        .left-sidebar nav ul {
+            list-style: none;
+            padding: 0;
+            margin: 0;
+        }
+        .left-sidebar nav ul.bottom-menu {
+            position: absolute;
+            bottom: 20px;
+            left: 0;
+            width: 100%;
+            padding: 0 12px;
+        }
+        .left-sidebar li {
+            display: flex;
+            align-items: center;
+            padding: 12px;
+            margin-bottom: 5px;
+            cursor: pointer;
+            font-size: 16px;
+            font-weight: 400;
+            transition: background-color 0.1s;
+            border-radius: 8px;
+        }
+        .left-sidebar li.active {
+            font-weight: 700;
+        }
+        .left-sidebar li:hover {
+            background-color: #f2f2f2;
+        }
+        .left-sidebar li span {
+            /* Sử dụng biểu tượng văn bản hoặc icon font */
+            font-size: 20px; 
+            margin-right: 15px;
+        }
+
+        /* 2. KHU VỰC NỘI DUNG CHÍNH (CONTENT AREA) */
+        .content-area {
+            overflow-y: auto; /* Cho phép cuộn khu vực này */
+            padding-top: 20px;
+            display: flex; 
+            justify-content: center; /* Căn giữa cột feed */
+        }
+        .feed-and-suggestions {
+            display: flex;
+            width: 100%;
+            max-width: 935px; /* Chiều rộng chuẩn của Instagram */
+            padding: 0 20px;
+        }
+
+        /* 3. KHU VỰC FEED (TRUNG TÂM) */
+        .feed {
+            max-width: 470px;
+            width: 100%;
+            margin-right: 60px; /* Khoảng cách giữa Feed và Suggestions */
+        }
+
+        /* Stories */
+        .stories {
+            display: flex;
+            overflow-x: hidden; /* Ẩn thanh cuộn nhưng vẫn cho phép stories */
+            padding: 10px 0;
+            background-color: #fff;
+            border: 1px solid #dbdbdb;
+            border-radius: 8px;
+            margin-bottom: 20px;
+            padding: 16px 0;
+        }
+        .story {
+            flex: 0 0 auto;
+            margin: 0 8px;
+            text-align: center;
+            font-size: 12px;
+        }
+        .story img {
+            width: 60px;
+            height: 60px;
+            border-radius: 50%;
+            padding: 2px;
+            border: 2px solid;
+            border-image: linear-gradient(45deg, #feda75, #fa7e1e, #d62976, #962fbf, #4f5bd5) 1;
+            object-fit: cover;
+            cursor: pointer;
+        }
+        .story div { margin-top: 5px; font-weight: 400; max-width: 60px; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+
+        /* Post */
+        .post {
+            background-color: #fff;
+            margin-bottom: 20px;
+            border: 1px solid #dbdbdb;
+            border-radius: 4px;
+            overflow: hidden;
+        }
+        .post-header {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            padding: 10px 15px;
+        }
+        .post-header .user {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            font-weight: 500;
+        }
+        .post-header img.avatar {
+            width: 32px;
+            height: 32px;
+            border-radius: 50%;
+            border: 1px solid #ddd;
+        }
+        .post-header .menu {
+            font-weight: bold;
+            cursor: pointer;
+            font-size: 18px;
+        }
+        .post-img {
+            width: 100%;
+            display: block;
+            max-height: 700px;
+            object-fit: cover;
+        }
+        .post-actions {
+            display: flex;
+            justify-content: space-between;
+            padding: 8px 15px;
+        }
+        .post-actions-left {
+            display: flex;
+            gap: 15px;
+        }
+        .post-actions img {
+            width: 24px;
+            height: 24px;
+            cursor: pointer;
+        }
+        .caption, .comments {
+            padding: 0 15px 5px 15px;
+            font-size: 14px;
+            line-height: 1.4;
+        }
+        .comments {
+            color: #8e8e8e;
+            padding-bottom: 10px;
+        }
+        .comments strong { color: #262626; }
+
+
+        /* 4. KHU VỰC GỢI Ý (RIGHT SUGGESTIONS) */
+        .right-suggestions {
+            width: 319px; /* Kích thước cố định cho sidebar gợi ý */
+            margin-top: 45px; /* Để khớp với phần trên cùng của feed */
+            padding-top: 10px;
+            flex-shrink: 0;
+            position: sticky; /* Giữ cố định khi cuộn feed */
+            top: 0;
+            height: fit-content;
+        }
+        .suggest-header {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            margin-bottom: 15px;
+        }
+        .suggest-header .user {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            font-weight: 500;
+        }
+        .suggest-header .user img {
+            width: 44px;
+            height: 44px;
+            border-radius: 50%;
+            object-fit: cover;
+        }
+        .suggest-header a {
+            color: #0095f6;
+            font-size: 12px;
+            font-weight: 500;
+            text-decoration: none;
+            cursor: pointer;
+        }
+        .suggest-list-title {
+            color: #8e8e8e;
+            font-weight: 500;
+            font-size: 14px;
+            display: flex;
+            justify-content: space-between;
+            margin-bottom: 10px;
+        }
+        .suggestion-item {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            margin-bottom: 12px;
+        }
+        .suggestion-item .user-info {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+        .suggestion-item img {
+            width: 32px;
+            height: 32px;
+            border-radius: 50%;
+        }
+        .suggestion-item .details {
+            display: flex;
+            flex-direction: column;
+            font-size: 14px;
+        }
+        .suggestion-item .details span:last-child {
+            color: #8e8e8e;
+            font-size: 12px;
+        }
+        .suggestion-item .follow-btn {
+            color: #0095f6;
+            font-size: 12px;
+            font-weight: 500;
+            cursor: pointer;
+        }
+        .meta-footer {
+            margin-top: 20px;
+            color: #c7c7c7;
+            font-size: 12px;
+            line-height: 1.5;
+        }
+        .meta-footer a {
+            color: #c7c7c7;
+            text-decoration: none;
+            margin-right: 4px;
+        }
+        /* --- KẾT THÚC CSS --- */
+    </style>
+</head>
+<body>
+
+    <header class="header"></header>
+    <div class="footer-nav"></div>
+
+    <div class="main-container">
+        <aside class="left-sidebar">
+            <div class="logo">Instagram</div>
+            <nav>
+                <ul>
+                    <li class="active"><span>🏠</span> Trang chủ</li>
+                    <li><span>🔍</span> Tìm kiếm</li>
+                    <li><span>🧭</span> Khám phá</li>
+                    <li><span>🎞️</span> Cuộn phim</li>
+                    <li><span>💬</span> Tin nhắn</li>
+                    <li><span>🔔</span> Thông báo</li>
+                    <li><span>➕</span> Tạo nên</li>
+                    <li><span>👤</span> Hồ sơ</li>
+                </ul>
+                <ul class="bottom-menu">
+                    <li><span>⚙️</span> Hơn</li>
+                    <li><span>Meta</span> Cùng từ Meta</li>
+                </ul>
+            </nav>
+        </aside>
+
+        <main class="content-area">
+            <div class="feed-and-suggestions">
+                
+                <div class="feed">
+                    <div class="stories">
+                        <div class="story"><img src="https://randomuser.me/api/portraits/women/68.jpg" alt="t1lci"><div>t1lci</div></div>
+                        <div class="story"><img src="https://randomuser.me/api/portraits/men/32.jpg" alt="buikui"><div>buikui</div></div>
+                        <div class="story"><img src="https://randomuser.me/api/portraits/women/44.jpg" alt="2huang"><div>2huang</div></div>
+                        <div class="story"><img src="https://randomuser.me/api/portraits/men/56.jpg" alt="snazzy"><div>snazzy</div></div>
+                        <div class="story"><img src="https://randomuser.me/api/portraits/women/12.jpg" alt="thewolf"><div>thewolf</div></div>
+                        <div class="story"><img src="https://randomuser.me/api/portraits/women/8.jpg" alt="h4shh"><div>h4shh</div></div>
+                    </div>
+
+                    <div class="post">
+                        <div class="post-header">
+                            <div class="user">
+                                <img class="avatar" src="https://randomuser.me/api/portraits/women/68.jpg" alt="avatar wheneveratelier">
+                                <strong>wheneveratelier</strong>
+                            </div>
+                            <div class="menu">...</div>
+                        </div>
+                        <img class="post-img" src="images/3116-loi-khuyen-de-co-chuyen-di-bien-tuyet-voi-cung-tre-nho.jpg" alt="post wheneveratelier"> 
+                        <div class="post-actions">
+                            <div class="post-actions-left">
+                                <img src="https://img.icons8.com/ios/50/000000/like--v1.png" alt="like">
+                                <img src="https://img.icons8.com/ios/50/000000/comments.png" alt="comment">
+                                <img src="https://img.icons8.com/ios/50/000000/share.png" alt="share">
+                            </div>
+                            <img src="https://img.icons8.com/ios/50/000000/bookmark-ribbon.png" alt="save">
+                        </div>
+                        <p class="caption"><strong>wheneveratelier:</strong> 13 giờ</p>
+                        <div class="comments">
+                            <p>Xem tất cả 5 bình luận</p>
+                        </div>
+                    </div>
+
+                    <div class="post">
+                        <div class="post-header">
+                            <div class="user">
+                                <img class="avatar" src="https://randomuser.me/api/portraits/men/32.jpg" alt="avatar robber">
+                                <strong>robber</strong>
+                            </div>
+                            <div class="menu">...</div>
+                        </div>
+                        <img class="post-img" src="https://picsum.photos/seed/picsum/600/600" alt="post 2">
+                        <div class="post-actions">
+                            <div class="post-actions-left">
+                                <img src="https://img.icons8.com/ios/50/000000/like--v1.png" alt="like">
+                                <img src="https://img.icons8.com/ios/50/000000/comments.png" alt="comment">
+                                <img src="https://img.icons8.com/ios/50/000000/share.png" alt="share">
+                            </div>
+                            <img src="https://img.icons8.com/ios/50/000000/bookmark-ribbon.png" alt="save">
+                        </div>
+                        <p class="caption"><strong>robber:</strong> Cảnh núi đẹp quá 🌄</p>
+                        <div class="comments">
+                            <p><strong>dave:</strong> Đẹp thật!</p>
+                        </div>
+                    </div>
+
+                </div>
+
+                <aside class="right-suggestions">
+                    <div class="suggest-header">
+                        <div class="user">
+                            <img src="https://randomuser.me/api/portraits/men/7.jpg" alt="user avatar">
+                            <div>
+                                <strong>qppih.24</strong>
+                                <span>HOÀNG ANH ĐỨC</span>
+                            </div>
+                        </div>
+                        <a href="#">Chuyển</a>
+                    </div>
+                    
+                    <div class="suggest-list-title">
+                        <span>Đề xuất cho bạn</span>
+                        <a href="#">Xem tất cả</a>
+                    </div>
+
+                    <div class="suggestion-list">
+                        <div class="suggestion-item">
+                            <div class="user-info">
+                                <img src="https://randomuser.me/api/portraits/women/1.jpg" alt="kah.taam">
+                                <div class="details">
+                                    <strong>kah.taam</strong>
+                                    <span>Theo dõi machizuqueen_10060...</span>
+                                </div>
+                            </div>
+                            <div class="follow-btn">Theo dõi</div>
+                        </div>
+                        <div class="suggestion-item">
+                            <div class="user-info">
+                                <img src="https://randomuser.me/api/portraits/men/2.jpg" alt="twyfmgt75">
+                                <div class="details">
+                                    <strong>twyfmgt75</strong>
+                                    <span>Đề xuất cho bạn</span>
+                                </div>
+                            </div>
+                            <div class="follow-btn">Theo dõi</div>
+                        </div>
+                        <div class="suggestion-item">
+                            <div class="user-info">
+                                <img src="https://randomuser.me/api/portraits/women/3.jpg" alt="ngdanpaccaycalem...">
+                                <div class="details">
+                                    <strong>ngdanpaccaycalem...</strong>
+                                    <span>Đề xuất cho bạn</span>
+                                </div>
+                            </div>
+                            <div class="follow-btn">Theo dõi</div>
+                        </div>
+                        <div class="suggestion-item">
+                            <div class="user-info">
+                                <img src="https://randomuser.me/api/portraits/men/4.jpg" alt="hahahan...">
+                                <div class="details">
+                                    <strong>hahahan...</strong>
+                                    <span>Đề xuất cho bạn</span>
+                                </div>
+                            </div>
+                            <div class="follow-btn">Theo dõi</div>
+                        </div>
+                    </div>
+
+                    <div class="meta-footer">
+                        <a href="#">Giới thiệu</a> · <a href="#">Trợ giúp</a> · <a href="#">API</a> · <a href="#">Việc làm</a> · <a href="#">Quyền riêng tư</a> · <a href="#">Điều khoản</a> · <a href="#">Vị trí</a> · <a href="#">Ngôn ngữ</a><br>
+                        Meta đã được xác minh<br>
+                        &copy; 2025 INSTAGRAM TỪ META
+                    </div>
+                </aside>
+            </div>
+        </main>
+    </div>
+</body>
+</html>
