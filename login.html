@@ -88,7 +88,7 @@
       sessionStorage.setItem('loggedIn', 'true');
       sessionStorage.setItem('username', username);
       // Chuyển sang home
-      window.location.href = 'index.html'; // home.html là Instagram clone
+      window.location.href = '/index.html'; // home.html là Instagram clone
     } else {
       errorMsg.textContent = "Tên đăng nhập hoặc mật khẩu không đúng!";
     }
@@ -96,7 +96,7 @@
 
   // Nếu đã login, tự động chuyển home
   if(sessionStorage.getItem('loggedIn') === 'true') {
-    window.location.href = 'home.html';
+    window.location.href = '/index.html';
   }
 </script>
 
