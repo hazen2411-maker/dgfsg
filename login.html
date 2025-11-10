@@ -1,544 +1,104 @@
 <!DOCTYPE html>
 <html lang="vi">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Instagram  - Trang Chủ</title>
-    <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@400;500;700&display=swap" rel="stylesheet">
-    <style>
-        /* --- CSS HOÀN CHỈNH --- */
-        * { box-sizing: border-box; margin: 0; padding: 0; }
-        body {
-            font-family: 'Roboto', sans-serif;
-            background-color: #fafafa;
-            color: #262626;
-            overflow-y: hidden; /* Ngăn cuộn ở body, để content-area quản lý */
-        }
-        
-        /* Ẩn các thành phần mobile (không dùng trong layout web) */
-        .header, .footer-nav {
-            display: none; 
-        }
-
-        /* === BỐ CỤC CHÍNH (GRID) === */
-        .main-container {
-            display: grid;
-            grid-template-columns: 244px 1fr; /* Mặc định: Sidebar rộng 244px */
-            height: 100vh;
-            transition: grid-template-columns 0.2s ease-in-out; /* Tạo hiệu ứng mượt mà */
-        }
-
-        /* 1. SIDEBAR TRÁI (LEFT NAVIGATION) */
-        .left-sidebar {
-            border-right: 1px solid #dbdbdb;
-            padding: 20px 12px 20px 12px;
-            position: sticky; 
-            top: 0;
-            height: 100vh;
-            background-color: #fff;
-            z-index: 10;
-        }
-        .left-sidebar .logo {
-            font-family: 'Roboto', sans-serif;
-            font-size: 24px;
-            font-weight: 700;
-            margin-bottom: 25px;
-            padding: 0 12px;
-            cursor: pointer; /* Cho phép click để thu gọn */
-        }
-        .left-sidebar nav ul {
-            list-style: none;
-            padding: 0;
-            margin: 0;
-        }
-        .left-sidebar nav ul.bottom-menu {
-            position: absolute;
-            bottom: 20px;
-            left: 0;
-            width: 100%;
-            padding: 0 12px;
-        }
-        .left-sidebar li {
-            display: flex;
-            align-items: center;
-            padding: 12px;
-            margin-bottom: 5px;
-            cursor: pointer;
-            font-size: 16px;
-            font-weight: 400;
-            transition: background-color 0.1s;
-            border-radius: 8px;
-        }
-        .left-sidebar li.active {
-            font-weight: 700;
-        }
-        .left-sidebar li:hover {
-            background-color: #f2f2f2;
-        }
-        .left-sidebar li span {
-            font-size: 20px; 
-            margin-right: 15px;
-            flex-shrink: 0; /* Ngăn icon bị co lại */
-        }
-
-        /* === TRẠNG THÁI THU GỌN (COLLAPSED STATE) === */
-        .main-container.collapsed {
-            grid-template-columns: 73px 1fr; /* Sidebar chỉ còn 73px */
-        }
-
-        .main-container.collapsed .left-sidebar {
-            padding-left: 8px; 
-            padding-right: 8px;
-        }
-
-        .main-container.collapsed .left-sidebar .logo {
-            font-size: 0; /* Ẩn logo chữ */
-            /* Sử dụng background image cho logo icon */
-            background-image: url('data:image/svg+xml;utf8,<svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24"><path d="M12 2c3.31 0 3.71.01 5.04.08 1.34.07 2.05.32 2.65.55.6.23 1.05.54 1.5.99.45.45.76.9.99 1.5.23.6.48 1.31.55 2.65.07 1.33.08 1.73.08 5.04s-.01 3.71-.08 5.04c-.07 1.34-.32 2.05-.55 2.65-.23.6-.54 1.05-.99 1.5-.45.45-.76.9-.99 1.5-.23.6-.48 1.31-.55 2.65-.07 1.33-.08 1.73-.08 5.04s.01 3.71.08 5.04c.07 1.34.32 2.05.55 2.65.23.6.54 1.05.99 1.5.45.45.9.76 1.5.99.6.23 1.31.48 2.65.55 1.33.07 1.73.08 5.04.08s3.71-.01 5.04-.08c-1.34-.07-2.05-.32-2.65-.55-.6-.23-1.05-.54-1.5-.99-.45-.45-.76-.9-.99-1.5-.23-.6-.48-1.31-.55-2.65-.07-1.33-.08-1.73-.08-5.04s.01-3.71.08-5.04c.07-1.34.32 2.05.55 2.65.23.6.54 1.05.99 1.5.45.45.9.76 1.5.99.6-.23 1.31-.48 2.65-.55 1.33-.07 1.73-.08 5.04-.08zm0-2c-3.37 0-3.79.01-5.12.08-1.34.07-2.38.31-3.23.64-.84.34-1.54.84-2.24 1.54s-1.2 1.4-1.54 2.24c-.33.85-.57 1.89-.64 3.23-.07 1.33-.08 1.75-.08 5.12s.01 3.79.08 5.12c.07 1.34.31 2.38.64 3.23.34.84.84 1.54 1.54 2.24s1.4.84 2.24 1.54c.85.33 1.89.57 3.23.64 1.33.07 1.75.08 5.12.08s3.79-.01 5.12-.08c1.34-.07 2.38-.31 3.23-.64.84-.34 1.54-.84 2.24-1.54s.84-1.4 1.54-2.24c.33-.85.57-1.89.64-3.23.07-1.33.08-1.75.08-5.12s-.01-3.79-.08-5.12c-.07-1.34-.31-2.38-.64-3.23-.34-.84-.84-1.54-1.54-2.24s-1.4-.84-2.24-1.54c-.85-.33-1.89-.57-3.23-.64-1.33-.07-1.75-.08-5.12-.08zm0 4c-4.41 0-8 3.59-8 8s3.59 8 8 8 8-3.59 8-8-3.59-8-8-8zm0 14c-3.31 0-6-2.69-6-6s2.69-6 6-6 6 2.69 6 6-2.69 6-6 6zm6.5-11c-.83 0-1.5.67-1.5 1.5s.67 1.5 1.5 1.5 1.5-.67 1.5-1.5-.67-1.5-1.5-1.5z"/></svg>'); 
-            background-repeat: no-repeat;
-            background-size: 24px;
-            background-position: center left;
-            height: 24px;
-            margin-left: 8px; /* Căn giữa logo icon */
-            padding: 0;
-            margin-top: 5px; /* Điều chỉnh vị trí logo icon */
-        }
-        .main-container.collapsed .left-sidebar li span {
-            margin-right: 0;
-        }
-
-        .main-container.collapsed .left-sidebar li {
-            padding: 12px 0; 
-            justify-content: center;
-        }
-
-        .main-container.collapsed .left-sidebar li:not(.active) {
-            /* Ẩn chữ, chỉ hiển thị icon */
-            font-size: 0;
-        }
-        .main-container.collapsed .left-sidebar li span {
-            font-size: 24px; /* Icon lớn hơn */
-        }
-
-
-        /* 2. KHU VỰC NỘI DUNG CHÍNH (CONTENT AREA) */
-        .content-area {
-            overflow-y: auto; 
-            padding-top: 20px;
-            display: flex; 
-            justify-content: center; 
-        }
-        .feed-and-suggestions {
-            display: flex;
-            width: 100%;
-            max-width: 935px; /* Bố cục tối đa */
-            padding: 0 20px;
-        }
-
-        /* 3. KHU VỰC FEED (TRUNG TÂM) */
-        .feed {
-            max-width: 470px;
-            width: 100%;
-            margin-right: 60px; 
-        }
-
-        /* Stories */
-        .stories {
-            display: flex;
-            overflow-x: auto; 
-            padding: 10px 0;
-            background-color: #fff;
-            border: 1px solid #dbdbdb;
-            border-radius: 8px;
-            margin-bottom: 20px;
-            padding: 16px 0;
-        }
-        .story {
-            flex: 0 0 auto;
-            margin: 0 8px;
-            text-align: center;
-            font-size: 12px;
-        }
-        .story img {
-            width: 60px;
-            height: 60px;
-            border-radius: 50%;
-            padding: 2px;
-            border: 2px solid;
-            border-image: linear-gradient(45deg, #feda75, #fa7e1e, #d62976, #962fbf, #4f5bd5) 1;
-            object-fit: cover;
-            cursor: pointer;
-        }
-        .story div { margin-top: 5px; font-weight: 400; max-width: 60px; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
-
-        /* Post */
-        .post {
-            background-color: #fff;
-            margin-bottom: 20px;
-            border: 1px solid #dbdbdb;
-            border-radius: 4px;
-            overflow: hidden;
-        }
-        .post-header {
-            display: flex;
-            align-items: center;
-            justify-content: space-between;
-            padding: 10px 15px;
-        }
-        .post-header .user {
-            display: flex;
-            align-items: center;
-            gap: 10px;
-            font-weight: 500;
-        }
-        .post-header img.avatar {
-            width: 32px;
-            height: 32px;
-            border-radius: 50%;
-            border: 1px solid #ddd;
-        }
-        .post-actions {
-            display: flex;
-            justify-content: space-between;
-            padding: 8px 15px;
-        }
-        .post-actions-left {
-            display: flex;
-            gap: 15px;
-        }
-        .post-actions img {
-            width: 24px;
-            height: 24px;
-            cursor: pointer;
-        }
-        .caption, .comments {
-            padding: 0 15px 5px 15px;
-            font-size: 14px;
-            line-height: 1.4;
-        }
-        .comments {
-            color: #8e8e8e;
-            padding-bottom: 10px;
-        }
-        .comments strong { color: #262626; }
-
-
-        /* 4. KHU VỰC GỢI Ý (RIGHT SUGGESTIONS) */
-        .right-suggestions {
-            width: 319px; 
-            margin-top: 45px; 
-            padding-top: 10px;
-            flex-shrink: 0;
-            position: sticky; 
-            top: 0;
-            height: fit-content;
-        }
-        .suggest-header {
-            display: flex;
-            align-items: center;
-            justify-content: space-between;
-            margin-bottom: 15px;
-        }
-        .suggest-header .user {
-            display: flex;
-            align-items: center;
-            gap: 10px;
-            font-weight: 500;
-        }
-        .suggest-header .user img {
-            width: 44px;
-            height: 44px;
-            border-radius: 50%;
-            object-fit: cover;
-        }
-        .suggest-header a {
-            color: #0095f6;
-            font-size: 12px;
-            font-weight: 500;
-            text-decoration: none;
-            cursor: pointer;
-        }
-        .suggestion-item .follow-btn {
-            color: #0095f6;
-            font-size: 12px;
-            font-weight: 500;
-            cursor: pointer;
-        }
-        /* Định kiểu cho nút "Đang theo dõi" sau khi click */
-        .suggestion-item .follow-btn.following {
-            color: #262626; 
-            font-weight: 500;
-        }
-        .meta-footer {
-            margin-top: 20px;
-            color: #c7c7c7;
-            font-size: 12px;
-            line-height: 1.5;
-        }
-
-
-        /* === MEDIA QUERIES (RESPONSIVE) === */
-        
-        @media (max-width: 1200px) {
-            /* Tự động thu gọn sidebar khi màn hình nhỏ */
-            .main-container {
-                grid-template-columns: 73px 1fr !important; /* !important để ưu tiên hơn CSS class .collapsed nếu có */
-            }
-            .left-sidebar .logo {
-                font-size: 0; 
-                background-image: url('data:image/svg+xml;utf8,<svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24"><path d="M12 2c3.31 0 3.71.01 5.04.08 1.34.07 2.05.32 2.65.55.6.23 1.05.54 1.5.99.45.45.76.9.99 1.5.23.6.48 1.31.55 2.65.07 1.33.08 1.73.08 5.04s-.01 3.71-.08 5.04c-.07 1.34-.32 2.05-.55 2.65-.23.6-.54 1.05-.99 1.5-.45.45-.76.9-.99 1.5-.23.6-.48 1.31-.55 2.65-.07 1.33-.08 1.73-.08 5.04s.01 3.71.08 5.04c.07 1.34.32 2.05.55 2.65.23.6.54 1.05.99 1.5.45.45.9.76 1.5.99.6.23 1.31.48 2.65.55 1.33.07 1.73.08 5.04.08s3.79-.01 5.12-.08c1.34-.07 2.38-.31 3.23-.64.84-.34 1.54-.84 2.24-1.54s1.2-1.4 1.54-2.24c.33-.85.57-1.89.64-3.23.07-1.33.08-1.75.08-5.12s-.01-3.79-.08-5.12c-.07-1.34-.31-2.38-.64-3.23-.34-.84-.84-1.54-1.54-2.24s-1.4-.84-2.24-1.54c-.85-.33-1.89-.57-3.23-.64-1.33-.07-1.75-.08-5.12-.08zM12 4c4.41 0 8 3.59 8 8s-3.59 8-8 8-8-3.59-8-8 3.59-8 8-8zM18.5 7c-.83 0-1.5.67-1.5 1.5s.67 1.5 1.5 1.5 1.5-.67 1.5-1.5-.67-1.5-1.5-1.5z"/></svg>'); 
-                background-repeat: no-repeat;
-                background-size: 24px;
-                background-position: center;
-                height: 24px;
-                margin-left: 0;
-                padding: 0;
-            }
-            /* Ẩn chữ và căn giữa icon cho các item */
-            .left-sidebar li:not(.active) {
-                font-size: 0;
-            }
-            .left-sidebar li {
-                padding: 12px 0;
-                justify-content: center;
-            }
-            .left-sidebar nav ul.bottom-menu {
-                padding: 0;
-            }
-            .left-sidebar li span {
-                margin-right: 0;
-                font-size: 24px;
-            }
-        }
-
-        @media (max-width: 935px) {
-            /* Ẩn sidebar suggestions khi màn hình quá nhỏ */
-            .right-suggestions {
-                display: none;
-            }
-            .feed-and-suggestions {
-                max-width: 600px; /* Căn giữa cột feed */
-                justify-content: center;
-                margin: 0 auto;
-            }
-            .feed {
-                margin-right: 0; /* Xóa khoảng cách bên phải */
-            }
-        }
-        /* --- KẾT THÚC CSS HOÀN CHỈNH --- */
-    </style>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Instagram Clone - Login</title>
+<link href="https://fonts.googleapis.com/css2?family=Roboto:wght@400;500;700&display=swap" rel="stylesheet">
+<style>
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+  body {
+    font-family: 'Roboto', sans-serif;
+    background-color: #fafafa;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    height: 100vh;
+  }
+  .login-container {
+    background-color: #fff;
+    border: 1px solid #dbdbdb;
+    padding: 40px 30px;
+    border-radius: 12px;
+    width: 100%;
+    max-width: 350px;
+    text-align: center;
+    box-shadow: 0 4px 8px rgba(0,0,0,0.05);
+  }
+  .login-container h1 {
+    font-family: 'Roboto', sans-serif;
+    font-size: 32px;
+    margin-bottom: 20px;
+  }
+  .login-container input {
+    width: 100%;
+    padding: 12px;
+    margin: 10px 0;
+    border-radius: 8px;
+    border: 1px solid #dbdbdb;
+    font-size: 14px;
+  }
+  .login-container button {
+    width: 100%;
+    padding: 12px;
+    background-color: #0095f6;
+    color: #fff;
+    font-weight: 700;
+    border: none;
+    border-radius: 8px;
+    cursor: pointer;
+    margin-top: 10px;
+    font-size: 14px;
+    transition: background-color 0.2s;
+  }
+  .login-container button:hover {
+    background-color: #0073e6;
+  }
+  .error {
+    color: #ed4956;
+    font-size: 13px;
+    margin-top: 5px;
+  }
+</style>
 </head>
 <body>
 
-    <header class="header"></header>
-    <div class="footer-nav"></div>
-
-    <div class="main-container" id="mainContainer">
-        <aside class="left-sidebar">
-            <div class="logo">Instagram</div>
-            <nav>
-                <ul>
-                    <li class="active"><span>🏠</span> Trang chủ</li>
-                    <li><span>🔍</span> Tìm kiếm</li>
-                    <li><span>🧭</span> Khám phá</li>
-                    <li><span>🎞️</span> Cuộn phim</li>
-                    <li><span>💬</span> Tin nhắn</li>
-                    <li><span>🔔</span> Thông báo</li>
-                    <li><span>➕</span> Tạo nên</li>
-                    <li><span>👤</span> Hồ sơ</li>
-                </ul>
-                <ul class="bottom-menu">
-                    <li onclick="logout()"><span>⚙️</span> Hơn</li>
-                    <li><span>Meta</span> Cùng từ Meta</li>
-                </ul>
-            </nav>
-        </aside>
-
-        <main class="content-area">
-            <div class="feed-and-suggestions">
-                
-                <div class="feed">
-                    <div class="stories">
-                        <div class="story"><img src="https://randomuser.me/api/portraits/women/68.jpg" alt="t1lci"><div>t1lci</div></div>
-                        <div class="story"><img src="https://randomuser.me/api/portraits/men/32.jpg" alt="buikui"><div>buikui</div></div>
-                        <div class="story"><img src="https://randomuser.me/api/portraits/women/44.jpg" alt="2huang"><div>2huang</div></div>
-                        <div class="story"><img src="https://randomuser.me/api/portraits/men/56.jpg" alt="snazzy"><div>snazzy</div></div>
-                        <div class="story"><img src="https://randomuser.me/api/portraits/women/12.jpg" alt="thewolf"><div>thewolf</div></div>
-                        <div class="story"><img src="https://randomuser.me/api/portraits/women/8.jpg" alt="h4shh"><div>h4shh</div></div>
-                    </div>
-
-                    <div class="post">
-                        <div class="post-header">
-                            <div class="user">
-                                <img class="avatar" src="https://randomuser.me/api/portraits/women/68.jpg" alt="avatar wheneveratelier">
-                                <strong>wheneveratelier</strong>
-                            </div>
-                            <div class="menu">...</div>
-                        </div>
-                        <img class="post-img" src="images/3116-loi-khuyen-de-co-chuyen-di-bien-tuyet-voi-cung-tre-nho.jpg" alt="post wheneveratelier"> 
-                        <div class="post-actions">
-                            <div class="post-actions-left">
-                                <img src="https://img.icons8.com/ios/50/000000/like--v1.png" alt="like">
-                                <img src="https://img.icons8.com/ios/50/000000/comments.png" alt="comment">
-                                <img src="https://img.icons8.com/ios/50/000000/share.png" alt="share">
-                            </div>
-                            <img src="https://img.icons8.com/ios/50/000000/bookmark-ribbon.png" alt="save">
-                        </div>
-                        <p class="caption"><strong>wheneveratelier:</strong> 13 giờ</p>
-                        <div class="comments">
-                            <p>Xem tất cả 5 bình luận</p>
-                        </div>
-                    </div>
-
-                    <div class="post">
-                        <div class="post-header">
-                            <div class="user">
-                                <img class="avatar" src="https://randomuser.me/api/portraits/men/32.jpg" alt="avatar robber">
-                                <strong>robber</strong>
-                            </div>
-                            <div class="menu">...</div>
-                        </div>
-                        <img class="post-img" src="images/866-600x600.jpg" alt="post 2">
-                        <div class="post-actions">
-                            <div class="post-actions-left">
-                                <img src="https://img.icons8.com/ios/50/000000/like--v1.png" alt="like">
-                                <img src="https://img.icons8.com/ios/50/000000/comments.png" alt="comment">
-                            </div>
-                            <img src="https://img.icons8.com/ios/50/000000/bookmark-ribbon.png" alt="save">
-                        </div>
-                        <p class="caption"><strong>robber:</strong> Cảnh núi đẹp quá 🌄</p>
-                        <div class="comments">
-                            <p><strong>dave:</strong> Đẹp thật!</p>
-                        </div>
-                    </div>
-
-                </div>
-
-                <aside class="right-suggestions">
-                    <div class="suggest-header">
-                        <div class="user">
-                            <img src="https://randomuser.me/api/portraits/men/7.jpg" alt="user avatar">
-                            <div>
-                                <strong>qppih.24</strong>
-                                <span>HOÀNG ANH ĐỨC</span>
-                            </div>
-                        </div>
-                        <a href="#">Chuyển</a>
-                    </div>
-                    
-                    <div class="suggest-list-title">
-                        <span>Đề xuất cho bạn</span>
-                        <a href="#">Xem tất cả</a>
-                    </div>
-
-                    <div class="suggestion-list">
-                        <div class="suggestion-item">
-                            <div class="user-info">
-                                <img src="https://randomuser.me/api/portraits/women/1.jpg" alt="kah.taam">
-                                <div class="details">
-                                    <strong>kah.taam</strong>
-                                    <span>Theo dõi machizuqueen_10060...</span>
-                                </div>
-                            </div>
-                            <div class="follow-btn">Theo dõi</div>
-                        </div>
-                        <div class="suggestion-item">
-                            <div class="user-info">
-                                <img src="https://randomuser.me/api/portraits/men/2.jpg" alt="twyfmgt75">
-                                <div class="details">
-                                    <strong>twyfmgt75</strong>
-                                    <span>Đề xuất cho bạn</span>
-                                </div>
-                            </div>
-                            <div class="follow-btn">Theo dõi</div>
-                        </div>
-                        <div class="suggestion-item">
-                            <div class="user-info">
-                                <img src="https://randomuser.me/api/portraits/women/3.jpg" alt="ngdanpaccaycalem...">
-                                <div class="details">
-                                    <strong>ngdanpaccaycalem...</strong>
-                                    <span>Đề xuất cho bạn</span>
-                                </div>
-                            </div>
-                            <div class="follow-btn">Theo dõi</div>
-                        </div>
-                        <div class="suggestion-item">
-                            <div class="user-info">
-                                <img src="https://randomuser.me/api/portraits/men/4.jpg" alt="hahahan...">
-                                <div class="details">
-                                    <strong>hahahan...</strong>
-                                    <span>Đề xuất cho bạn</span>
-                                </div>
-                            </div>
-                            <div class="follow-btn">Theo dõi</div>
-                        </div>
-                    </div>
-
-                    <div class="meta-footer">
-                        <a href="#">Giới thiệu</a> · <a href="#">Trợ giúp</a> · <a href="#">API</a> · <a href="#">Việc làm</a> · <a href="#">Quyền riêng tư</a> · <a href="#">Điều khoản</a> · <a href="#">Vị trí</a> · <a href="#">Ngôn ngữ</a><br>
-                        Meta đã được xác minh<br>
-                        &copy; 2025 INSTAGRAM TỪ META
-                    </div>
-                </aside>
-            </div>
-        </main>
-    </div>
+<div class="login-container">
+  <h1>Instagram</h1>
+  <input type="text" id="username" placeholder="Username">
+  <input type="password" id="password" placeholder="Password">
+  <button onclick="login()">Đăng nhập</button>
+  <div class="error" id="error-msg"></div>
+</div>
 
 <script>
-    // --- JAVASCRIPT HOÀN CHỈNH ---
+  // Tạm thời đặt username/password demo
+  const users = {
+    'admin': '123',
+    'robber': '123'
+  };
 
-    // Hàm Logout
-    function logout() {
-        // Xóa trạng thái đăng nhập
-        sessionStorage.removeItem("loggedIn");
-        // Chuyển hướng đến trang login
-        window.location.href = "login.html"; 
+  function login() {
+    const username = document.getElementById('username').value.trim();
+    const password = document.getElementById('password').value.trim();
+    const errorMsg = document.getElementById('error-msg');
+
+    if(users[username] && users[username] === password) {
+      // Lưu trạng thái login
+      sessionStorage.setItem('loggedIn', 'true');
+      sessionStorage.setItem('username', username);
+      // Chuyển sang home
+      window.location.href = 'home.html'; // home.html là Instagram clone
+    } else {
+      errorMsg.textContent = "Tên đăng nhập hoặc mật khẩu không đúng!";
     }
+  }
 
-    document.addEventListener('DOMContentLoaded', (event) => {
-        // 1. Logic Kiểm tra Đăng nhập
-        // Kiểm tra xem người dùng đã đăng nhập chưa. Nếu chưa, chuyển hướng đến login.html.
-        if(sessionStorage.getItem("loggedIn") !== "true") {
-            // Thay đổi URL nếu bạn đổi tên file login
-            window.location.href = "login.html"; 
-        }
-
-        // 2. Tương tác Nút "Theo dõi" (Follow)
-        const followButtons = document.querySelectorAll('.follow-btn');
-        followButtons.forEach(button => {
-            button.addEventListener('click', function() {
-                if (this.textContent === 'Theo dõi') {
-                    this.textContent = 'Đang theo dõi';
-                    this.classList.add('following'); 
-                } else {
-                    this.textContent = 'Theo dõi';
-                    this.classList.remove('following');
-                }
-            });
-        });
-
-        // 3. Tính năng Sidebar Thu Gọn (Collapse)
-        const mainContainer = document.getElementById('mainContainer');
-        const logo = document.querySelector('.left-sidebar .logo');
-        const collapseMediaQuery = window.matchMedia('(max-width: 1200px)');
-
-        function toggleSidebar() {
-            // Chỉ cho phép toggle bằng tay khi màn hình đủ lớn (trên 1200px)
-            if (!collapseMediaQuery.matches) {
-                mainContainer.classList.toggle('collapsed');
-            }
-        }
-
-        // Gắn sự kiện click vào logo để thu gọn/mở rộng
-        logo.addEventListener('click', toggleSidebar);
-
-        // Khởi tạo trạng thái cho màn hình lớn
-        if (window.innerWidth < 1200) {
-             // Trên 1200px, CSS sẽ tự động thu gọn.
-             // Nếu muốn mặc định là thu gọn khi khởi tạo, thêm dòng này:
-             // mainContainer.classList.add('collapsed'); 
-        }
-    });
+  // Nếu đã login, tự động chuyển home
+  if(sessionStorage.getItem('loggedIn') === 'true') {
+    window.location.href = 'home.html';
+  }
 </script>
+
 </body>
 </html>
